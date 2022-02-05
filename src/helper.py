@@ -34,7 +34,7 @@ def better_agg(t_df, interval=10):
     temp = t_df.copy()
     df = temp.groupby(temp.index // interval).agg({
         'total_bytes': [pd.Series.mean],
-        'max_bytes': [np.mean, np.std],
+        # 'max_bytes': [np.mean, np.std], # takes way too long to calculate
         'Proto': [pd.Series.mode],
         '1->2Bytes': [np.mean],
         '2->1Bytes': [np.mean],
@@ -169,15 +169,10 @@ def genfeat(df):
     tdf['mean_tdelta'] = tdf['packet_times'].str.split(';').apply(mean_diff)
     tdf['max_tdelta'] = tdf['packet_times'].str.split(';').apply(max_diff)
     
-    tdf['packet_times'] = tdf['packet_times'].apply(return_int) # converting to int
-    #tdf = onehot_(tdf)
-    # def maxbyte(x):
-    #     x = pd.DataFrame([x[0],x[1]]).T.groupby(0).sum().max().values[0]
-    #     return x
-    # mx_byte = tdf[['packet_times', 'packet_sizes']].apply(maxbyte, axis =1) 
-    # tdf['max_bytes'] = mx_byte
+    tdf['packet_times'] = tdf['packet_times'].apply(return_int) # converting to int list
+
     tdf['number_ms'] = tdf['packet_times'].apply(lambda x: pd.Series(x).nunique())
-    tdf['max_bytes'] = tdf.apply(lambda x: max_bytes(x['packet_times'],x['packet_sizes']),axis=1)
+    # tdf['max_bytes'] = tdf.apply(lambda x: max_bytes(x['packet_times'],x['packet_sizes']),axis=1)
     tdf['total_pkt_sizes'] = tdf.packet_sizes.apply(lambda x: sum(x))
     tdf['pkt_ratio'] = tdf.total_pkt_sizes / tdf.total_pkts
     tdf['time_spread'] = tdf.packet_times.apply(lambda x: x[-1] - x[0])
@@ -210,7 +205,7 @@ def max_diff(lst):
     return 0 if np.isnan(mn) else mn     
 
 def max_bytes(x,y):
-    maxbytes = pd.DataFrame([x,y]).T.groupby(0).sum().max().values[0]
+    maxbytes = pd.DataFrame([x,y]).T.groupby(0).sum().values.max()
     return maxbytes
 ## Function to return accuraucy based on 10% difference 
 def accuracy(a,b):

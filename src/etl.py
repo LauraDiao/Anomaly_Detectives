@@ -16,7 +16,7 @@ def readfilerun_simple(filename, losslog_dir='data/raw/train_r'):
     
     run_df = pd.read_csv(filename)
     losslog_df = pd.read_csv(losslog, header=None).rename(
-        columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'})
+        columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'}).ffill()
     losslog_df['Time'] = losslog_df['drop_unix'].astype(int)
     losslog_df = losslog_df.groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
         lambda x: ';'.join(x.astype(str))).reset_index() # TODO find a way to handle this see: event and drop_unix columns should be semicolon separable values in string format.
@@ -52,7 +52,7 @@ def readfilerun(run_, output_dir):
         
         run_df = pd.read_csv(f'{run_}/{run}')
         losslog_df = pd.read_csv(losslog, header=None).rename(
-            columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'})
+            columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'}).ffill()
         losslog_df['Time'] = losslog_df['drop_unix'].astype(int)
         losslog_df = losslog_df.groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
             lambda x: ';'.join(x.astype(str))).reset_index() # TODO find a way to handle this see: event and drop_unix columns should be semicolon separable values in string format.
