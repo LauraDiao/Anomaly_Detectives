@@ -1,13 +1,7 @@
 import numpy as np
-import json
-import sys
 import pandas as pd
-import os
-import glob
-import re
-import matplotlib.pyplot as plt
-import seaborn as sns
 from os import listdir
+
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -68,7 +62,7 @@ def agg10(t_df):
                 'time_spread_min','time_spread_max','pkt sum','longest_seq',
                 'longest_seq_min', 'longest_seq_max','total_pkt_sizes','byte_ratio', 'mean_tdelta', 'max_tdelta', 'loss', 'latency']
     df = pd.DataFrame([t_df[:10]['total_bytes'].mean(),
-                       t_df[:10]['max_bytes'].std(), 
+                    #    t_df[:10]['max_bytes'].std(), 
                        t_df[:10]['Proto'].value_counts().idxmax(), # most frequent protocol
                        t_df[:10]['1->2Bytes'].mean(),
                        t_df[:10]['2->1Bytes'].mean(),
@@ -96,7 +90,7 @@ def agg10(t_df):
     
     for i in range(20, t_df.shape[0],10):
         df = pd.concat([df, pd.DataFrame([t_df[i-10:i]['total_bytes'].mean(),
-                                           t_df[i-10:i]['max_bytes'].std(), 
+                                        #    t_df[i-10:i]['max_bytes'].std(), 
                                            t_df[i-10:i]['Proto'].value_counts().idxmax(), # most frequent protocol
                                            t_df[i-10:i]['1->2Bytes'].mean(),
                                            t_df[i-10:i]['2->1Bytes'].mean(),
