@@ -243,11 +243,10 @@ def rolling_window(labl):
     y_pred3 = etree.predict(X_test)
     acc3= mean_squared_error(y_test, y_pred3)
     roll = pd.Series(y_pred3).rolling(2).mean() # roling over past 20 seconds
-    print c(roll)
+    # print(roll)
 
     print(f'mse: {acc3}, r2: {etree.score(X_test, y_test)}')
     feat_imp = pd.Series(index=[x for x in indexcol if x in df.columns], 
               data=etree.feature_importances_).sort_values(ascending=False)
-    feat_imp
-    print(feat_imp)
-    return 
+    
+    return feat_imp

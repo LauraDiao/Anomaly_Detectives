@@ -18,7 +18,7 @@ def readfilerun_simple(filename, losslog_dir='data/raw/train_r'):
     losslog_df = pd.read_csv(losslog, header=None).rename(
         columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'}).ffill()
     losslog_df['Time'] = losslog_df['drop_unix'].astype(int)
-    losslog_df = losslog_df.groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
+    losslog_df = losslog_df.ffill().groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
         lambda x: ';'.join(x.astype(str))).reset_index() # TODO find a way to handle this see: event and drop_unix columns should be semicolon separable values in string format.
     
     df = pd.merge(run_df, losslog_df, on=['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto'], how="left") # merge on fivetuple key
@@ -32,6 +32,11 @@ def readfilerun_simple(filename, losslog_dir='data/raw/train_r'):
     df['later_latency'] = int(run_labels[3])
     df['later_loss'] = int(run_labels[4])
     df['deterministic'] = bool(run_labels[2])
+    
+    df['switch_label'] = run_labels[5:][0] if len(run_labels[5:]) > 0 else np.nan
+    after_switch = df['event'].str.contains('switch').replace(False, np.nan).ffill().fillna(False)
+    df['loss'][after_switch] = df['later_loss']
+    df['latency'][after_switch] = df['later_latency']
     return df
 
 def readfilerun(run_, output_dir):
@@ -54,7 +59,7 @@ def readfilerun(run_, output_dir):
         losslog_df = pd.read_csv(losslog, header=None).rename(
             columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'}).ffill()
         losslog_df['Time'] = losslog_df['drop_unix'].astype(int)
-        losslog_df = losslog_df.groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
+        losslog_df = losslog_df.ffill().groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
             lambda x: ';'.join(x.astype(str))).reset_index() # TODO find a way to handle this see: event and drop_unix columns should be semicolon separable values in string format.
         
         df = pd.merge(run_df, losslog_df, on=['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto'], how="left") # merge on fivetuple key
@@ -69,9 +74,13 @@ def readfilerun(run_, output_dir):
         df['later_loss'] = int(run_labels[4])
         df['deterministic'] = bool(run_labels[2])
         
-        #TODO future implementation of boolean flag for when the switch happens so we know when to use later lat/loss
+        ## switch event encoding
+        df['switch_label'] = run_labels[5:][0] if len(run_labels[5:]) > 0 else np.nan
+        after_switch = df['event'].str.contains('switch').replace(False, np.nan).ffill().fillna(False)
+        df['loss'][after_switch] = df['later_loss']
+        df['latency'][after_switch] = df['later_latency']
         
-        df.to_csv(f'{output_dir}/labeled_{temp_label_str}.csv') # save to temporary output directory: just merging takes a bit
+        df.to_csv(os.path.join(os.getcwd(),f'{output_dir}/labeled_{temp_label_str}.csv')) # save to temporary output directory: just merging takes a bit
 
     return 
 
