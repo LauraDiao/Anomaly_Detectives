@@ -1,17 +1,25 @@
 # Anomaly Detectives
-An in depth approach to detecting significant real-time shifts in network performance indicating network degradation. Building on the features of [DANE](https://github.com/dane-tool/dane), we build a classification system that determines if there are substantial changes to packet loss ratio and degree of latency. 
+An in depth approach to detecting significant real-time shifts in network performance indicating network degradation. Building on the data generation process behind [DANE](https://github.com/dane-tool/dane) and Viasat's [network stats](https://github.com/Viasat/network-stats), we build a classification system that determines if there are substantial changes to packet loss rate and degree of latency. Please visit [our webpage](https://ben243.github.io/Anomaly-Detectives/) for a more comprehensive view of this project.
+
+<br>
+
+# Quick Links
+- [Webpage Code](https://github.com/Ben243/Anomaly-Detectives/tree/gh-pages) WIP
+- [Modified DANE](https://github.com/jenna-my/modified_dane)
+
+- [network-stats](https://github.com/Viasat/network-stats)
 
 <br>
 
 ## To generate data for this project:
 
-1. Generate data using our modified fork of [DANE](https://github.com/jenna-my/modified_dane)
+1. Generate data using our [modified fork of DANE](https://github.com/jenna-my/modified_dane)
     - ```make```, ```docker.io```, and ```docker-compose``` are required on your machine to run modified_dane properly.
     - a recursive flag is required to properly install modified_dane: <br>```git clone https://github.com/jenna-my/modified_dane --recursive```
 
 2. Clone this branch of the repository
    ```
-   git clone https://github.com/LauraDiao/Q2_checkpoint_
+   git clone https://github.com/LauraDiao/Q2
    ```
 
 3. Place all raw DANE csv files within the directory ```data/raw``` of this repository. If the directory has not been created, run the command ```run.py``` once to generate all relevant directories.
@@ -49,3 +57,5 @@ this format is crucial for the model to train on the proper labels.
 - "filen1": "combined_subset_latency.csv", - subset of the processed data to make eda
 - "filen2": "combined_t_latency.csv", - features generated from processed data
 - "filen3": "combined_all_latency.csv" - all processed - 
+
+
