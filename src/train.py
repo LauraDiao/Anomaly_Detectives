@@ -219,7 +219,7 @@ def feat_impt(labl):
     print(f'mse: {acc3}, r2: {etree.score(X_test, y_test)}')
     feat_imp = pd.Series(index=[x for x in indexcol if x in df.columns], 
               data=etree.feature_importances_).sort_values(ascending=False)
-    feat_imp
+    return feat_imp
     
 def rolling_window(labl):
     # rolling wdinow

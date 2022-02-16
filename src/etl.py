@@ -88,9 +88,9 @@ def gen(cond , tempdir, subset):
     '''Generates transformed output data aggregated in 3 files.'''
     unseen = ""
     if cond == 'seen': 
-        print("transforming seen data")
+        print("transforming seen data", sep='')
     if cond == 'unseen': 
-        print("transforming un seen data")
+        print("transforming un seen data", sep='')
         unseen = "unseen"
     
     tempdatafiles = 'data/temp/' + tempdir # temporary data directory for training model
@@ -119,6 +119,7 @@ def gen(cond , tempdir, subset):
         # f_df = agg10(df_cols)
         f_df = better_agg(df_cols)
         transformed.append(f_df)
+        print('.', sep='')
         
     # makes paths
     path = os.path.join(os.getcwd() , "outputs", "gen_temp")
