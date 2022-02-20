@@ -202,9 +202,10 @@ def max_bytes(x,y):
     maxbytes = pd.DataFrame([x,y]).T.groupby(0).sum().values.max()
     return maxbytes
 def accuracy(a,b):
-    '''Function to return accuraucy based on 10% difference''' 
+    '''Function to return accuracy based on 10% difference''' 
     scale = a*.1
     if b <= a + scale and b >= a -scale:
         return 1
     else:
         return 0
+    

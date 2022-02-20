@@ -222,7 +222,7 @@ def feat_impt(labl):
     return feat_imp
     
 def rolling_window(labl):
-    # rolling wdinow
+    # rolling window
 #     Pd rolling window
 #     Aggregate last 10 rows
 #     Other idea: shift row and calc percent difference
@@ -250,3 +250,10 @@ def rolling_window(labl):
               data=etree.feature_importances_).sort_values(ascending=False)
     
     return feat_imp
+
+def pct_err_correct(labels, preds, threshold=0.1):
+    '''calculates percentage of "correct" predictions within a given threshold 
+    for model performance, given a label array and a prediction array. 
+    Optional threshold parameter specifies what predictions would fall under correct'''
+    pct_err = (abs(labels - preds) / labels) < threshold
+    return pct_err.sum()/pct_err.size
