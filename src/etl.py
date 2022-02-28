@@ -84,7 +84,7 @@ def readfilerun(run_, output_dir):
 
     return 
 
-def gen(cond , tempdir, subset):
+def gen(cond , tempdir, subset, window=10):
     '''Generates transformed output data aggregated in 3 files.'''
     unseen = ""
     if cond == 'seen': 
@@ -117,7 +117,7 @@ def gen(cond , tempdir, subset):
 
         #transformed
         # f_df = agg10(df_cols)
-        f_df = better_agg(df_cols)
+        f_df = better_agg(df_cols, interval=window)
         transformed.append(f_df)
         print('.', sep='')
         
@@ -125,11 +125,11 @@ def gen(cond , tempdir, subset):
     path = os.path.join(os.getcwd() , "outputs", "gen_temp")
     path2 = os.path.join(os.getcwd() , "outputs")
     
-    list_to_csv(data, os.path.join(path2, unseen + "combined_all.csv"))
+    list_to_csv(data, os.path.join(path2, unseen + f"combined_all_{window}.csv"))
     print('combined_finished', sep=' ')
-    list_to_csv(datasubset, os.path.join(path2, unseen + "combined_subset_6068.csv"))
+    list_to_csv(datasubset, os.path.join(path2, unseen + f"combined_subset_6068_{window}.csv"))
     print('combined_all_finished', sep=' ')
-    list_to_csv(transformed, os.path.join(path2, unseen +  "combined_transform.csv"))
+    list_to_csv(transformed, os.path.join(path2, unseen +  f"combined_transform_{window}.csv"))
     print('transformed_finished', sep=' ')
     
     return None

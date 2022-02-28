@@ -50,9 +50,9 @@ def main(targets):
     if 'data' in targets:
         # generating feat from unseen and seen data
         readfilerun('data/raw/train_r', 'data/temp/tempdata_r')
-        gen(test_seen, 'tempdata_r', **transform_config)
+        gen(test_seen, 'tempdata_r', **transform_config, window=25)
         readfilerun('data/raw/train_c', 'data/temp/tempdata_c')
-        gen(test_unseen, 'tempdata_c', **transform_config)
+        gen(test_unseen, 'tempdata_c', **transform_config, window=25)
 
     if 'eda' in targets:  
         # readfiledrun and gen for seen data, refer to data target
