@@ -1,4 +1,6 @@
-# Anomaly Detectives
+# Network Signal Anomaly Detection
+#### by the Anomaly Detectives
+Laura Diao, Jenna Yang, Benjamin Sam
 
 # Overview
 In order to detect issues in network transmission data, we built a real-time-capable anomaly detection system. This system includes both alerting and monitoring features, which would enable Internet Service Providers (ISP's) such as Viasat to properly monitor user network performance and quality in real time. Moreover, detection in real-time would allow Viasat to handle issues more promptly and increase customer satisfaction. The system utilizes simulated network traffic data to train a model that predicts the packet loss rate as well as the latency of an internet connection, and uses these as well as certain features derived from the data to determine whether an adverse event is occurring.
@@ -17,7 +19,7 @@ In order to detect issues in network transmission data, we built a real-time-cap
 <!-- TODO fix this TOC to make it work -->
 
 # Introduction
-Network degradation occurs in many forms, and our project will focus on two common factors: packet loss and latency. Packet loss occurs when one or more data packets transmitted across a computer network fail to reach their destination. Latency can be defined as a measure of delay for data to transmit across a network. For internet users, high rates of packet loss and significant latency can manifest in jitter or lag, indicators of overall poor network performance as perceived by the end user. Thus, when issues arise in these two factors, it would be beneficial for sevice providers to know exactly when the user is experiencing problems in real time. In real world scenarios, situations or environments such as poor port quality, overloaded ports, network congestion and more can impact overall network performance.
+Network degradation occurs in many forms, and our project will focus on two common factors: packet loss and latency. Packet loss occurs when one or more data packets transmitted across a computer network fail to reach their destination. Latency can be defined as a measure of delay for data to transmit across a network. For internet users, high rates of packet loss and significant latency can manifest in jitter or lag, indicators of overall poor network performance as perceived by the end user. Thus, when issues arise in these two factors, it would be beneficial for service providers to know exactly when the user is experiencing problems in real time. In real world scenarios, situations or environments such as poor port quality, overloaded ports, network congestion and more can impact overall network performance.
 
 [Here's a more in depth discussion on networks and common problems with packet loss and latency](network-domain.md)
 
