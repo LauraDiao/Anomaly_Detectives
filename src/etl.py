@@ -119,7 +119,7 @@ def gen(cond , tempdir, subset, window=10):
         # f_df = agg10(df_cols)
         f_df = better_agg(df_cols, interval=window)
         transformed.append(f_df)
-        print('.', sep='')
+        print('.', end='')
         
     # makes paths
     path = os.path.join(os.getcwd() , "outputs", "gen_temp")
