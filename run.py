@@ -1,4 +1,4 @@
-import json,sys, os, glob, re, time
+import json,sys, os
 from os import listdir
 
 import numpy as np
@@ -56,6 +56,7 @@ def main(targets):
 
     if 'eda' in targets:  
         # readfiledrun and gen for seen data, refer to data target
+        main_eda(test_seen, [100, 500], **eda_config)
         print('EDA generated in the train and inference targets')
 
     if 'train' in targets:
@@ -115,7 +116,10 @@ def main(targets):
         print("Testing on unseen data: ")
         test_mse(test_unseen, comb1, comb2)
         best_performance(test_unseen)
+        
         model_eda()
+        lossmodel = gen_model("loss")
+        latmodel = gen_model("latency")
                 
     if 'all' in targets: 
         # runs all targets on all data

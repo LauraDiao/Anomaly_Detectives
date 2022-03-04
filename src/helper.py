@@ -24,8 +24,8 @@ def longest_seq(aList):
     return maxCount
 
 def better_agg(t_df, interval=10):
-    
-    temp = t_df.copy()
+    '''similar to agg10, takes dataframe with features from output of genfeat function and aggregates them in 10 second intervals'''
+    temp = t_df.iloc[20:-3].copy()
     df = temp.groupby(temp.index // interval).agg({
         'total_bytes': [pd.Series.mean],
         # 'max_bytes': [np.mean, np.std], # takes way too long to calculate

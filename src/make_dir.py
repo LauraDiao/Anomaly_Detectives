@@ -23,10 +23,12 @@ def init_():
         os.mkdir(temp_r_path)
         
     img_path = "outputs/eda"
+    model_img = "outputs/model"
     
     if not os.path.isdir("outputs"):
         os.mkdir("outputs")
         os.mkdir(img_path)
+        os.mkdir(model_img)
         
     out_path = "data/out"
     

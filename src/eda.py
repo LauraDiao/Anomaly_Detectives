@@ -1,26 +1,14 @@
-import numpy as np
-import json
-import sys
-import pandas as pd
-import os
-import glob
-import re
-import matplotlib.pyplot as plt
-import seaborn as sns
+import json,sys, os, glob, re
 from os import listdir
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
-from sklearn.datasets import load_digits
-from sklearn.model_selection import learning_curve
-from sklearn.model_selection import ShuffleSplit
-from sklearn.model_selection import train_test_split
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+import seaborn as sns
+from sklearn.model_selection import learning_curve, ShuffleSplit, train_test_split
 from sklearn.decomposition import PCA
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.datasets import make_hastie_10_2
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor, GradientBoostingRegressor
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -41,12 +29,12 @@ def main_eda(cond, lst, filen1, filen2, filen3):
     
     plottogether(cond, lst, df_1, filen1.strip(".csv")) # trends over subset
     plottogether(cond, lst, df_3, filen3.strip(".csv")) # trends over entire data
-    plotloss(cond, df_2)
+    # plotloss(cond, df_2)
 
     plot_correlation_matrix(cond, df_2) # correlation matrix
     plotlongest(df_3, cond, 6000, 14000)
     # below makes rest of visualizations
-    plotbytes(df_3, 6000, 14000, 200, 300, cond)
+    plotbytes(df_3, 100, 15000, 100, 500, cond)
     #plot_detailed_bytes()
 
 def model_eda():
@@ -69,39 +57,64 @@ def plotbytes(df, loss1, loss2, lat1, lat2, cond):
     if cond =='unseen': 
         unseen = 'unseen'
     # series over loss
-    lst_loss = ['total_bytes', 'max_bytes', 'mean_tdelta']
+    lst_loss = ["byte_ratio", "pkt_ratio", "time_spread", "total_bytes", "2->1Pkts"]
     # series over latency
-    lst_lat = ['number_ms', 'total_pkts', 'max_tdelta']
+    lst_lat = [
+            "total_pkts",
+            "total_pkt_sizes",
+            "2->1Bytes",
+            "number_ms",
+            "mean_tdelta",
+            "max_tdelta",
+            "time_spread",
+            "longest_seq",
+        ]
     for i in lst_loss: 
         l1 = df[df['loss'] == loss1]
         l2 = df[df['loss'] == loss2]
-        byte_agg1 = l1.groupby('Second').sum().reset_index()[['Second', i,'loss']]
-        byte_agg2 = l2.groupby('Second').sum().reset_index()[['Second', i,'loss']]
-        plt.figure(figsize = (15,10))
+        byte_agg1 = l1.groupby('Second').median().reset_index()[['Second', i,'loss']]
+        byte_agg2 = l2.groupby('Second').median().reset_index()[['Second', i,'loss']]
+        plt.figure(figsize = (12,5))
         plt.plot(byte_agg1['Second'], byte_agg1[i], label = str(loss1))
         plt.plot(byte_agg2['Second'], byte_agg2[i], label = str(loss2))
-        plt.legend(title = "Packet Loss", loc="upper right")
+        plt.legend(title = "Packet Loss (1/x)", loc="upper right")
         plt.xlabel('Seconds')
         plt.ylabel(i.replace("_", '').capitalize())
-        plt.title(i.replace("_", '').capitalize() + ' Per Second')
+        plt.title('Median ' + i.replace("_", ' ').capitalize() + ' Per Second')
         path = os.path.join(os.getcwd() , "outputs")
-        saveto = os.path.join(path, "eda",unseen +  i + ".png")
+        saveto = os.path.join(path, "eda",unseen +  i.replace('>', '')  + ".png")
         plt.savefig(saveto)
+
+        ax = plt.figure(figsize = (5,5))
+        ax.suptitle(f'{i} Density Plot')
+        sns.displot(pd.concat([l1, l2]), x=i, hue="loss", kind="kde", palette=['tab:blue', 'tab:orange'], ax=ax
+            ).set(title=f'{i} Density Plot')
+        saveto2 = os.path.join(path, "eda",unseen +  i.replace('>', '')  + "distplot.png")
+        plt.savefig(saveto2)
+        
     for i in lst_lat:
         l1 = df[df['latency'] == lat1]
         l2 = df[df['latency'] == lat2]
-        byte_agg1 = l1.groupby('Second').sum().reset_index()[['Second', i,'latency']]
-        byte_agg2 = l2.groupby('Second').sum().reset_index()[['Second', i,'latency']]
-        plt.figure(figsize = (15,10))
+        byte_agg1 = l1.groupby('Second').median().reset_index()[['Second', i,'latency']]
+        byte_agg2 = l2.groupby('Second').median().reset_index()[['Second', i,'latency']]
+        plt.figure(figsize = (12,5))
         plt.plot(byte_agg1['Second'], byte_agg1[i], label = str(lat1))
         plt.plot(byte_agg2['Second'], byte_agg2[i], label = str(lat2))
-        plt.legend(title = "Packet Loss", loc="upper right")
+        plt.legend(title = "Latencies", loc="upper right")
         plt.xlabel('Seconds')
         plt.ylabel(i.replace("_", '').capitalize())
-        plt.title(i.replace("_", '').capitalize() + ' Per Second')
+        plt.title('Median ' + i.replace("_", '').capitalize() + ' Per Second')
         path = os.path.join(os.getcwd() , "outputs")
-        saveto = os.path.join(path, "eda",unseen +   i + ".png")
+        saveto = os.path.join(path, "eda",unseen + i.replace('>', '') + ".png")
         plt.savefig(saveto)
+        
+        ax = plt.figure(figsize = (5,5))
+        ax.suptitle(f'{i} Density Plot')
+        sns.displot(pd.concat([l1, l2]), x=i, hue="latency", kind="kde", palette=['tab:blue', 'tab:orange'], ax=ax
+            ).set(title=f'{i} Density Plot')
+        saveto2 = os.path.join(path, "eda",unseen +  i.replace('>', '')  + "distplot.png")
+        plt.savefig(saveto2)
+        
     return
 
 def plotlongest(df, cond, loss1, loss2):
@@ -127,10 +140,15 @@ def plot_correlation_matrix(cond, df):
     unseen = ''
     if cond =='unseen': 
         unseen = 'unseen'
-    corrmat = df.corr()
+    featurelst = ["byte_ratio", "pkt_ratio", "time_spread", "total_bytes", 
+        "2->1Pkts", "total_pkts", "total_pkt_sizes", "2->1Bytes", "number_ms",
+        "mean_tdelta", "max_tdelta", "time_spread", "longest_seq"]
+    featurelst.sort()
+    
+    corrmat = df[featurelst].corr()
     top_corr_features = corrmat.index
-    fig = plt.figure(figsize=(20,20))
-    sns.heatmap(df[top_corr_features].corr(),annot=True,cmap="RdYlGn")
+    fig = plt.figure(figsize=(10,10))
+    sns.heatmap(df[top_corr_features].corr(),annot=True,cmap="RdYlGn", vmin=-1, vmax=1)
     #savefig
     path = os.path.join(os.getcwd() , "outputs")
     saveto = os.path.join(path, "eda", unseen + "correlation_matrix.png")
@@ -170,7 +188,7 @@ def plot_main4(cond, df_1, l1, df_2, l2, picname):
     path = os.path.join(os.getcwd() , "outputs")
     saveto = os.path.join(path, "eda", unseen + "latency_trends_c" + picname + ".png")
     fig.savefig(saveto)
-    print("end of main4")
+    print("plot_main4() executed")
 
 def plottogether(cond, lst, df_e, picname): 
     unseen = ''
@@ -188,6 +206,7 @@ def plottogether(cond, lst, df_e, picname):
     # print(subset1.shape)
     # print(subset2.shape)
     plot_main4(cond, subset1, str(leftrun), subset2, str(rightrun), picname)
+    return subset1, subset2
 
 def plot_learning_curve(
     estimator,

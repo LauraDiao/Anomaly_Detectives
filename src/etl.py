@@ -1,7 +1,4 @@
-
 import numpy as np
-import json
-import sys
 import pandas as pd
 import os
 from os import listdir
@@ -19,11 +16,9 @@ def readfilerun_simple(filename, losslog_dir='data/raw/train_r'):
         columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'}).ffill()
     losslog_df['Time'] = losslog_df['drop_unix'].astype(int)
     losslog_df = losslog_df.ffill().groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
-        lambda x: ';'.join(x.astype(str))).reset_index() # TODO find a way to handle this see: event and drop_unix columns should be semicolon separable values in string format.
+        lambda x: ';'.join(x.astype(str))).reset_index()
     
     df = pd.merge(run_df, losslog_df, on=['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto'], how="left") # merge on fivetuple key
-    # df.fillna(inplace=True, value=-1) #TODO plan implementation of dealing with null values
-    # df['event'] =  # TODO change to 3 different profiles: no drop, drop, and switch event
     df = df[df['Proto'] == df['Proto'].mode()[0]] # selects relevant non ipv6 int(connection
     
     ## adding labels
@@ -60,11 +55,9 @@ def readfilerun(run_, output_dir):
             columns={0:'event', 1:'drop_unix', 2:'IP1', 3:'Port1', 4:'IP2', 5:'Port2', 6:'Proto'}).ffill()
         losslog_df['Time'] = losslog_df['drop_unix'].astype(int)
         losslog_df = losslog_df.ffill().groupby(['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto']).agg(
-            lambda x: ';'.join(x.astype(str))).reset_index() # TODO find a way to handle this see: event and drop_unix columns should be semicolon separable values in string format.
+            lambda x: ';'.join(x.astype(str))).reset_index()
         
         df = pd.merge(run_df, losslog_df, on=['Time', 'IP1', 'Port1', 'IP2', 'Port2', 'Proto'], how="left") # merge on fivetuple key
-        # df.fillna(inplace=True, value=-1) #TODO plan implementation of dealing with null values
-        # df['event'] =  # TODO change to 3 different profiles: no drop, drop, and switch event
         df = df[df['Proto'] == df['Proto'].mode()[0]] # selects relevant non ipv6 int(connection
         
         ## adding labels
