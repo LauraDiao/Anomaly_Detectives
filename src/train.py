@@ -20,6 +20,7 @@ from etl import *
 
 
 def test_feat(cond, df, cols, p, df_u):
+    '''tests different features on different data combinations'''
     unseen = ""
     if cond == "unseen":
         unseen = "unseen"
@@ -81,6 +82,7 @@ def test_feat(cond, df, cols, p, df_u):
 
 
 def test_mse(cond, all_comb1, all_comb2):
+    '''generates initial model metrics on seen or unseen data'''
     unseen = ""
     if cond == "unseen":
         unseen = "unseen"
@@ -134,6 +136,7 @@ def test_mse(cond, all_comb1, all_comb2):
 
 
 def best_performance(cond):
+    '''returns the performances of different model architectures on our data.'''
     unseen = ""
     if cond == "unseen":
         unseen = "unseen"
@@ -171,6 +174,7 @@ def best_performance(cond):
 
 
 def getAllCombinations(cond_):
+    '''Returns all possible combinations of features for training on'''
     lst = [
         "total_bytes",
         "max_bytes",
@@ -213,6 +217,7 @@ def getAllCombinations(cond_):
 
 
 def feat_impt(labl):
+    '''generates feature importances'''
     label_col = labl
 
     df = pd.read_csv(os.path.join(os.getcwd(), "outputs", "combined_transform.csv"))
@@ -325,7 +330,7 @@ def gen_model(label, n_jobs=-1, train_window=20, pca_components=4, test_size=0.0
     ]
     mdl = GridSearchCV(pipe, param_grid=param_grid, cv=cv, verbose=False, n_jobs=n_jobs)
 
-    # pipe = Pipeline(steps=[
+    # pipe = Pipeline(steps=[ # K Neighbors Regressor worked well! we didn't use it, though
     #     ('reduce_dim', PCA(4)), 
     #     ('clf', KNeighborsRegressor())]) # better for packet loss, apparently
     # param_grid = [{'clf' : [KNeighborsRegressor()],
@@ -352,12 +357,12 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
     smooth_window = 10
     pcterr_thresh = 0.15
     
-    lat_threshold = 0.06
-    
     if label == "loss":
         # loss features
         indexcol = ["byte_ratio", "pkt_ratio", "time_spread", "total_bytes", "2->1Pkts"]
     elif label == "latency":
+        threshold = 0.06
+        
         # latency features
         indexcol = [
             "total_pkts",
@@ -370,10 +375,7 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
             "longest_seq",
         ]
         
-    df["prediction"] = mdl.predict(
-        df[indexcol].rolling(window).mean().bfill()
-    )
-        
+    # prediction on rolling means
     df[f"pred_{label}"] = mdl.predict(df.rolling(window, min_periods=1)[indexcol].mean()) # prediction on mean aggregation
 
     test_mape = mean_absolute_percentage_error(mdl.predict(df[indexcol]), df[label])
@@ -395,11 +397,12 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
         title_ = f"Real Time Prediction on {label} (latency: {list(df['latency'].unique())}, loss: {list(df['loss'].unique())})"
     else:
         title_ = f"Real Time Anomaly Classification on {label} (latency: {list(df['latency'].unique())}, loss: {list(df['loss'].unique())})"
+    fig, ax = plt.subplots(figsize=(12, 5))
     df[[label, f"pred_{label}"]].plot(
         figsize=(12, 5),
         title=title_,
         xlabel="Time (sec)",
-        ylabel=ylabel,
+        ylabel=ylabel, ax=ax
     )
     
     # vertical line for legends below
@@ -407,6 +410,12 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
                     markersize=10, markeredgewidth=1.5, label='Vertical line')
     
     if label == "loss":
+        def format_func1(value, tick_number):
+            # find number of multiples of pi/2
+            # N = np.exp(value).astype(int)
+            return f"1/{value.astype(int)}"
+        ax.yaxis.set_major_formatter(format_func1)
+        
         # empirical loss calculation
         eloss = emp_loss(df, emplosswindow)
         eloss.plot(color='green')
@@ -418,21 +427,22 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
         
         # plot legend
         lines = [
-                Line2D([0], [0], color='tab:blue'),
-                Line2D([0], [0], color='tab:orange'), 
-                Line2D([0], [0], color='tab:green'), 
-                vertical_line
-                ],
-        labels = [
-                f"{label} label",
-                "Prediction",
-                f"Empirical Loss",
-                "Percent Change Anomaly"
+            Line2D([0], [0], color='tab:blue'),
+            Line2D([0], [0], color='tab:orange'), 
+            Line2D([0], [0], color='tab:green'), 
+            vertical_line
             ]
+        labels = [
+            f"{label} label",
+            "Prediction",
+            f"Empirical Loss",
+            "Percent Change Anomaly"
+        ]
         
     else:
         test_mape_eloss = np.nan
         test_pcterr_eloss = np.nan
+        ax.set_yscale('log')
         # latency plot legend
         lines = [
             Line2D([0], [0], color='blue'),
@@ -444,52 +454,63 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
             "Prediction",
             "Percent Change Anomaly"
         ]
-    # for i in df[~df["event"].isnull()].index:
+    # for i in df[~df["event"].isnull()].index: # adds when packet drops happen as yellow lines
     #     plt.axvline(x=i, color="y", alpha=0.45)
 
     ## adds new column to df
-    plt.legend(lines, labels, loc="upper right") if classify else plt.legend(lines[:-1], labels[:-1], loc="upper right")
+    if classify:
+        plt.legend(lines, labels, loc="upper right")
+    else:
+        plt.legend(lines[:-1], labels[:-1], loc="upper right")
     
     df[f'pred_{label}_pctc2_smooth'] = (
         df[f'pred_{label}'].rolling(smooth_window, min_periods=1).mean()
         ).pct_change(pct_change_window).rolling(smooth_window, min_periods=1).mean()
     
-    # if classify:
-    #     if label == 'loss':
-    #         anomaly_idx = df[df[f'pred_{label}_pctc2_smooth'] <= threshold].index - window
-    #         for i in anomaly_idx[anomaly_idx > 0]: # indices where negative percent change is higher than threshold
-    #             plt.axvline(x=i, color='r', alpha=.45)
-    #     else:
-    #         anomaly_idx = df[df[f'pred_{label}_pctc2_smooth'] >= lat_threshold].index - window 
-    #         for i in anomaly_idx[anomaly_idx > 0]: # indices where negative percent change is higher than threshold
-    #             plt.axvline(x=i, color='r', alpha=.45)
     if classify:
         if label == 'loss':
-            anomaly_idx = df[df[f'pred_{label}_pctc2_smooth'] <= threshold].index - (window// 2)
-            for i in anomaly_idx[anomaly_idx > 0]: # indices where negative percent change is higher than threshold
+            anomalies = df[f'pred_{label}_pctc2_smooth'] <= threshold
+            anomaly_idx = df[anomalies].index - (window// 2)
+            for i in anomaly_idx[anomaly_idx > 0]: # indices where *negative* percent change is higher than threshold
                 plt.axvline(x=i, color='r', alpha=.45)
         elif label == 'latency':
-            anomaly_idx = df[df[f'pred_{label}_pctc2_smooth'] >= lat_threshold].index - (window // 2) 
-            for i in anomaly_idx[anomaly_idx > 0]: # indices where negative percent change is higher than threshold
+            anomalies = df[f'pred_{label}_pctc2_smooth'] >= threshold
+            anomaly_idx = df[anomalies].index - (window // 2) 
+            for i in anomaly_idx[anomaly_idx > 0]: # indices where percent change is greater than threshold
                 plt.axvline(x=i, color='r', alpha=.45)
     idx = f"latency_{str(list(df['latency'].unique())).strip('[]').replace(', ', '-')}_loss_{str(list(df['loss'].unique())).strip('[]').replace(', ', '-')}"
     
-    saveto = os.path.join("outputs/model", f'{label}_performance_{idx}.png')
+    # save predictions to outputs/model
+    predictions = os.path.join("data/out/anomaly_detection", f'{label}_anomalies_with_{idx}.csv')
+    pd.DataFrame({'Time':df['Time'], 'Anomalies':anomalies}).to_csv(predictions, index=False) # outputs classifier
+    
+    # save plot
+    saveto = os.path.join("outputs/model", f'{label}_model_perf_with_{idx}.png')
     plt.savefig(saveto)
     
     return (idx, test_mape, test_pcterr, test_mape_eloss, test_pcterr_eloss, test_mederr)
 
-def performance_metrics(filedir, lossmodel, latmodel, classify=False, verbose=True):
-    '''using a file directory of raw dane runs, generates two dataframes of model performance metrics on both loss and latency models in a tuple
+def performance_metrics(filedir, lossmodel, latmodel, classify=False, transformed_dir=False, verbose=True):
+    '''
+    using a file directory of raw dane runs, generates two dataframes of model performance metrics on both loss and latency models in a tuple
     we used this to run vis_model() on every test dane run and generate visualizations
     '''
     losslst = []
     latencylst = []
     for i in [x for x in listdir(filedir) if not 'losslog' in x]:
-        mergedtable = readfilerun_simple(os.path.join(filedir, i), filedir) # merges losslogs into one table
-        df_ = genfeat(mergedtable) # generates all the adjacent features we train on!
-        losslst.append(vis_model(df_, "loss", lossmodel, classify, verbose))
-        latencylst.append(vis_model(df_, "latency", latmodel, classify, verbose))
-    print(losslst, latencylst)
+        if not transformed_dir:
+            mergedtable = readfilerun_simple(os.path.join(filedir, i), filedir) # merges losslogs into one table
+            df_ = genfeat(mergedtable) # generates all the adjacent features we train on!
+        else:
+            mergedtable = pd.read_csv(os.path.join(filedir, i)) # merges losslogs into one table
+            df_ = genfeat(mergedtable) # generates all the adjacent features we train on!
+        losslst.append(vis_model(df_, "loss", lossmodel, classify, verbose=verbose))
+        
+        latencylst.append(vis_model(df_, "latency", latmodel, classify, verbose=verbose))
+    
     metrics = ['idx', 'test_mape', 'test_pcterr', 'test_mape_eloss', 'test_pcterr_eloss', 'test_mederr']
-    return (pd.DataFrame(losslst, columns=metrics).set_index('idx'), pd.DataFrame(latencylst, columns=metrics).set_index('idx'))
+    lossperf = pd.DataFrame(losslst, columns=metrics).set_index('idx')
+    latperf = pd.DataFrame(latencylst, columns=metrics).set_index('idx')
+    print(lossperf.mean())
+    print(latperf.mean())
+    return (lossperf, latperf)

@@ -13,6 +13,14 @@ warnings.filterwarnings("ignore")
 
 def init_():
     '''creates directories needed to run repo'''
+
+    raw_c_path = "data/raw/train_c"
+    raw_r_path = "data/raw/train_r"
+    
+    if not os.path.isdir('data/temp'):
+        os.mkdir(raw_c_path)
+        os.mkdir(raw_r_path)
+    
     temp_path = "data/temp"
     temp_c_path = "data/temp/tempdata_c"
     temp_r_path = "data/temp/tempdata_r"
