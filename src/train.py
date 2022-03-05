@@ -340,7 +340,7 @@ def gen_model(label, n_jobs=-1, train_window=20, pca_components=4, test_size=0.0
 
     mdl = mdl.fit(X_train, y_train)
     if verbose:
-        print(f"----------{label} model test set statistics----------")
+        print(f"----------{label} model validation set statistics----------")
         print(f"{label} model validation MAPE:", mean_absolute_percentage_error(mdl.predict(X_test), y_test))
         print(f"{label} model validation Median Absolute Error:", median_absolute_error(mdl.predict(X_test), y_test))
         print(f"{label} model validation pct of predictions within {threshold} margin:", pct_err_correct(mdl.predict(X_test), y_test, threshold=threshold))
@@ -511,6 +511,8 @@ def performance_metrics(filedir, lossmodel, latmodel, classify=False, transforme
     metrics = ['idx', 'test_mape', 'test_pcterr', 'test_mape_eloss', 'test_pcterr_eloss', 'test_mederr']
     lossperf = pd.DataFrame(losslst, columns=metrics).set_index('idx')
     latperf = pd.DataFrame(latencylst, columns=metrics).set_index('idx')
+    print('----------loss model test set statistics----------')
     print(lossperf.mean())
+    print('----------latency model test set statistics----------')
     print(latperf.mean())
     return (lossperf, latperf)
