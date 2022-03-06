@@ -2,7 +2,7 @@
 DANE, which stands for Data Automation and Network Emulation, is a dataset generation tool that can emulate diverse ranges of network traffic representative of the real world. The DANE tool allows us to custom configure network conditions such as latency and packet loss and generate network traffic data associated with the configured conditions.
 
 # How to generate data with DANE
-Tutorial on DANE using Linux machine.
+The following section details how you can generate data with DANE on a Linux machine. These are the same steps that were followed to generate data for our project.
 ### 1. Environment Setup
 The following packages are required to use DANE for data generation:
 * `make`
@@ -42,11 +42,15 @@ After configuring the network conditions, you may now run DANE by typing:
 ```
 sudo make up
 ```
-The DANE test should begin executing 
+The DANE test should begin executing and can take about 8 minutes to run. However, you may stop the test whenever you'd like by opening a new Linux session and typing:
+```
+sudo make stop
+```
 
-### DANE outputs
-For each run, DANE should be outputting two csv files: the raw network data and the losslog data. The raw network file contains the traffic data for that particular run, while the losslog file contains the actual dropped packets. The losslog file allows us to calculate the empirical number of dropped packets for the DANE run. 
+### 4. Retrieve data
+For each run, DANE should be outputting two csv files: the raw network data and the losslog data. The raw network file contains the traffic data for that particular run, while the losslog file contains the actual dropped packets. The losslog file allows us to calculate the empirical number of dropped packets for the DANE run.
 
+These files should be automatically downloaded into the Linux directory. With a Windows system, you may also use WSL to access the files.
 
 
 [<- Back to home page](index.md)
