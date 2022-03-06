@@ -28,12 +28,13 @@ Network degradation occurs in many forms, and our project will focus on two comm
 
 ## Data Generation with DANE
 - explain who what why how dane in context of project
+- 
+The simulated network data used for our models were generated with a network emulation tool built by a previous capstone project team. [DANE](https://dane-tool.github.io/dane/), which stands for Data Automation and Network Emulation, is a dataset generation tool that can emulate diverse ranges of network traffic representative of the real world. The DANE tool allows us to custom configure network conditions such as latency and packet loss and generate network traffic data associated with the configured conditions.
 
 
-- explain how data is obtained (refer to repo for in depth, maybe #TODO a separate page on reproducing results)
+- 
 [More in depth tutorial on how to use our modified fork of DANE](dane-details.md)
 
-We built our model using simulated metwork data used by a network emulation tool built by a previous capstone project to predict the packet loss rate and latency of a connection. This
 
 ## Exploring the Feature Space
 - A bit more eda
