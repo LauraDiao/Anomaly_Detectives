@@ -15,6 +15,7 @@ Network degradation occurs in many forms, and our project will focus on two comm
 [A deeper discussion on networks and common problems with packet loss and latency](network-domain.md)
 
 # Data
+Using a tool called DANE, we could generate records of simulated network traffic with varying rates of packet loss and latencies. This helped us create and capture data of a wide variety of unique network conditions. We then built on top of this dataset by transforming them in the process of feature engineering based on investigations made about their distributions.
 
 ## Data Generation with DANE
 The simulated network data used for our models were generated with a network emulation tool built by a previous capstone project team. [DANE](https://dane-tool.github.io/dane/), which stands for Data Automation and Network Emulation, is a dataset generation tool that can emulate diverse ranges of network traffic representative of the real world. The DANE tool allows us to custom configure network conditions such as latency and packet loss and generate network traffic data associated with the configured conditions.
