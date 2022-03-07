@@ -1,12 +1,10 @@
 # Anomaly Detectives
-An in depth approach to detecting significant real-time shifts in network performance indicating network degradation. Building on the data generation process behind [DANE](https://github.com/dane-tool/dane) and Viasat's [network stats](https://github.com/Viasat/network-stats), we build a classification system that determines if there are substantial changes to packet loss rate and degree of latency. Please visit [our webpage](https://ben243.github.io/Anomaly-Detectives/) for a more comprehensive view of this project.
+An in depth approach to detecting significant real-time shifts in network performance indicating network degradation. Building on the data generation process behind [DANE](https://github.com/dane-tool/dane) and Viasat's [network stats](https://github.com/Viasat/network-stats), we build a classification system that determines if there are substantial changes to packet loss rate and degree of latency. Please visit [our webpage](https://lauradiao.github.io/Anomaly-Detectives/) for a more comprehensive view of this project.
 
 <br>
 
 # Quick Links
-- [Webpage Code](https://github.com/Ben243/Anomaly-Detectives/tree/gh-pages) WIP
 - [Modified DANE](https://github.com/jenna-my/modified_dane)
-
 - [network-stats](https://github.com/Viasat/network-stats)
 
 <br>
