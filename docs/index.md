@@ -9,19 +9,10 @@ In order to detect issues in network transmission data, we built a real-time-cap
 - [Main GitHub Repository](https://github.com/LauraDiao/Q2)
 - [Modified DANE](https://github.com/jenna-my/modified_dane)
 
-# Table of Contents
-- [Introduction](#-Introduction)
-- [Methods](#-Methods)
-- [Results](#-Results)
-- [Limitations](#-Limitations)
-- [Conclusions](#-Conclusion)
-- [Special Thanks](#-Special-Thanks)
-<!-- TODO fix this TOC to make it work -->
-
 # Introduction
 Network degradation occurs in many forms, and our project will focus on two common factors: packet loss and latency. Packet loss occurs when one or more data packets transmitted across a computer network fail to reach their destination. Latency can be defined as a measure of delay for data to transmit across a network. For internet users, high rates of packet loss and significant latency can manifest in jitter or lag, indicators of overall poor network performance as perceived by the end user. Thus, when issues arise in these two factors, it would be beneficial for service providers to know exactly when the user is experiencing problems in real time. In real world scenarios, situations or environments such as poor port quality, overloaded ports, network congestion and more can impact overall network performance.
 
-[Here's a more in depth discussion on networks and common problems with packet loss and latency](network-domain.md)
+[A deeper discussion on networks and common problems with packet loss and latency](network-domain.md)
 
 # Data
 - [short summary paragraph detailing high level overview of data generation process, model building work and its performance, and why we used it (importance of dataset)]
@@ -31,9 +22,9 @@ Network degradation occurs in many forms, and our project will focus on two comm
 
 
 - explain how data is obtained (refer to repo for in depth, maybe #TODO a separate page on reproducing results)
-[More in depth tutorial on how to use our modified fork of DANE](dane-details.md)
+[An in depth tutorial on how to use our modified fork of DANE](dane-details.md)
 
-We built our model using simulated metwork data used by a network emulation tool built by a previous capstone project to predict the packet loss rate and latency of a connection. This
+We built our model using simulated network data used by a network emulation tool built by a previous capstone project to predict the packet loss rate and latency of a connection. 
 
 ## Exploring the Feature Space
 - A bit more eda

@@ -53,13 +53,15 @@ After configuring the network conditions, you may now run DANE by typing:
 ```
 sudo make up
 ```
-The DANE test should begin executing, and the process may be terminated after about 300 seconds using the command
+The DANE test should begin executing and can take about 8 minutes to run. However, you may stop the test whenever you'd like by opening a new Linux session and typing:
 ```
 sudo make stop
 ```
 
-## DANE outputs
-For each run, DANE should be outputting two csv files: the raw network data and the losslog data. The raw network file contains the traffic data for that particular run, while the losslog file contains the actual dropped packets. The losslog file allows us to calculate the empirical number of dropped packets for the DANE run. 
+## 4. Retrieve data
+For each run, DANE should be outputting two csv files: the raw network data and the losslog data. The raw network file contains the traffic data for that particular run, while the losslog file contains the actual dropped packets. The losslog file allows us to calculate the empirical number of dropped packets for the DANE run.
+
+These files should be automatically downloaded into the Linux directory. With a Windows system, you may also use WSL to access the files.
 
 ## Troubleshooting
 Some common problems when running DANE include having no new networks for the containers to run the simulations in. in these situations, one can run 
@@ -71,5 +73,7 @@ or
 sudo docker system prune
 ```
 to clear any dangling processes that may be taking up resources on the machine. This followed by a call to `sudo make build` should bring DANE back up to a general working order. We recommend a fresh reinstall following the instructions from the top if you continue encountering problems.
+
+
 
 [<- Back to home page](index.md)
