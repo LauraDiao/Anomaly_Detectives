@@ -442,7 +442,8 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
     else:
         test_mape_eloss = np.nan
         test_pcterr_eloss = np.nan
-        ax.set_yscale('log')
+        # ax.set_yscale('log')
+        ax.ticklabel_format(useOffset=False)
         # latency plot legend
         lines = [
             Line2D([0], [0], color='blue'),

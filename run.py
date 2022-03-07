@@ -41,7 +41,7 @@ def clean():
         "data/temp/tempdata_c", 
         "data/temp/tempdata_r", 
         'data/out',
-        # 'outputs',
+        'outputs',
         'outputs/eda'
         'outputs/model'
     ]
