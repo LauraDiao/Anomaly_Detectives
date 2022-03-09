@@ -32,10 +32,10 @@ def data(transform_config, test_unseen, test_seen, is_test=False):
     gen(test_unseen, 'tempdata_c', **transform_config, window=25)
     
     
-def eda(eda_config, test_seen):
+def eda(eda_config, test_seen, is_test=False):
     # readfiledrun and gen for seen data, refer to data target
     
-    main_eda(test_seen, [100, 500], **eda_config)
+    main_eda(test_seen, [100, 500], is_test=is_test, **eda_config)
     print('EDA generated in the train and inference targets')
 
 def clean():
@@ -132,7 +132,7 @@ def main(targets):
     if "test" in targets: 
         # runs all targets on sample data
         data(transform_config, test_unseen, test_seen, is_test=True) # runs on test dataset
-        eda(eda_config, test_seen)
+        eda(eda_config, test_seen, is_test=True) # ignores some viz that doesnt work with test dataset
         train(transform_config, eda_config, test_seen)
         inference(transform_config, eda_config, test_unseen)
         classify_(**mdl_config)

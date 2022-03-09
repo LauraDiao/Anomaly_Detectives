@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 
 from helper import *
 
-def main_eda(cond, lst, filen1, filen2, filen3):
+def main_eda(cond, lst, filen1, filen2, filen3, is_test=False):
     unseen = ''
     if cond =='unseen': 
         unseen = 'unseen'
@@ -34,7 +34,8 @@ def main_eda(cond, lst, filen1, filen2, filen3):
     plot_correlation_matrix(cond, df_2) # correlation matrix
     plotlongest(df_3, cond, 6000, 14000)
     # below makes rest of visualizations
-    plotbytes(df_3, 100, 15000, 100, 500, cond)
+    if not is_test:
+        plotbytes(df_3, 100, 15000, 100, 500, cond)
     #plot_detailed_bytes()
 
 def model_eda():
