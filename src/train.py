@@ -583,6 +583,7 @@ def performance_metrics(
     lat_thresh=0.06,
     window=20,
     emplosswindow=25,
+    pct_change_window=2,
     transformed_dir=False,
     verbose=True,
 ):
@@ -617,6 +618,7 @@ def performance_metrics(
                 lat_thresh,
                 window,
                 emplosswindow,
+                pct_change_window,
                 verbose=verbose,
             )
         )
@@ -631,6 +633,7 @@ def performance_metrics(
                 lat_thresh,
                 window,
                 emplosswindow,
+                pct_change_window,
                 verbose=verbose,
             )
         )
