@@ -38,5 +38,6 @@ def init_():
 
     out_path = "data/out"
 
-    if not os.path.isdir("data/out"):
+    if not os.path.isdir(out_path):
         os.mkdir(out_path)
+        os.mkdir(os.path.join(out_path, 'anomaly_detection'))
