@@ -349,7 +349,7 @@ def gen_model(label, n_jobs=-1, train_window=20, pca_components=4, test_size=0.0
     
     return mdl
 
-def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplosswindow=25, pct_change_window=2, verbose=True):
+def vis_model(df, label, mdl, classify=False, loss_thresh=-0.15, lat_thresh=0.06, window=20, emplosswindow=25, pct_change_window=2, verbose=True):
     '''generates visualizations and evaluations of model performance
     works in conjunction with gen_model() and run inside performance_metrics()'''
     
@@ -358,10 +358,12 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
     pcterr_thresh = 0.15
     
     if label == "loss":
+        threshold = loss_thresh
+        
         # loss features
         indexcol = ["byte_ratio", "pkt_ratio", "time_spread", "total_bytes", "2->1Pkts"]
     elif label == "latency":
-        threshold = 0.06
+        threshold = lat_thresh
         
         # latency features
         indexcol = [
@@ -491,7 +493,7 @@ def vis_model(df, label, mdl, classify=False, threshold=-0.15, window=20, emplos
     
     return (idx, test_mape, test_pcterr, test_mape_eloss, test_pcterr_eloss, test_mederr)
 
-def performance_metrics(filedir, lossmodel, latmodel, classify=False, transformed_dir=False, verbose=True):
+def performance_metrics(filedir, lossmodel, latmodel, classify=False, loss_thresh=-0.15, lat_thresh=0.06, transformed_dir=False, verbose=True):
     '''
     using a file directory of raw dane runs, generates two dataframes of model performance metrics on both loss and latency models in a tuple
     we used this to run vis_model() on every test dane run and generate visualizations
@@ -505,9 +507,9 @@ def performance_metrics(filedir, lossmodel, latmodel, classify=False, transforme
         else:
             mergedtable = pd.read_csv(os.path.join(filedir, i)) # merges losslogs into one table
             df_ = genfeat(mergedtable) # generates all the adjacent features we train on!
-        losslst.append(vis_model(df_, "loss", lossmodel, classify, verbose=verbose))
+        losslst.append(vis_model(df_, "loss", lossmodel, classify, loss_thresh, lat_thresh, verbose=verbose))
         
-        latencylst.append(vis_model(df_, "latency", latmodel, classify, verbose=verbose))
+        latencylst.append(vis_model(df_, "latency", latmodel, classify, loss_thresh, lat_thresh, verbose=verbose))
     
     metrics = ['idx', 'test_mape', 'test_pcterr', 'test_mape_eloss', 'test_pcterr_eloss', 'test_mederr']
     lossperf = pd.DataFrame(losslst, columns=metrics).set_index('idx')

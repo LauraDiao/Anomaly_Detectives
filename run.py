@@ -84,13 +84,14 @@ def inference(transform_config, eda_config, test_unseen):
     main_eda(test_unseen, [200, 300], **eda_config)
     print("EDA saved to outputs/eda/ folder")
 
-def classify():
+def classify_(n_jobs, train_window, pca_components, test_size, classify, verbose):
     '''generates anomaly classification results'''
     
     model_eda()
-    lossmodel = gen_model("loss")
-    latmodel = gen_model("latency")
-    lossp, latp = performance_metrics('data/temp/tempdata_c',lossmodel, latmodel, classify=True, transformed_dir=True, verbose=False)
+    lossmodel = gen_model("loss", n_jobs, train_window, pca_components, test_size, verbose)
+    latmodel = gen_model("latency", n_jobs, train_window, pca_components, test_size, verbose)
+    lossp, latp = performance_metrics('data/temp/tempdata_c',lossmodel, latmodel, classify, transformed_dir=True, verbose=verbose)
+    # saves classification metrics on test set
     lossp.to_csv('data/out/loss_model_test_metrics.csv')
     latp.to_csv('data/out/latency_model_test_metrics.csv') 
     lossp.mean().to_csv('data/out/loss_model_test_metrics_mean.csv')
@@ -101,51 +102,44 @@ def main(targets):
 
     transform_config = json.load(open('config/transform.json'))
     eda_config = json.load(open('config/eda.json'))
-    all_config = json.load(open("config/all.json"))
+    mdl_config = json.load(open("config/model.json"))
 
     test_unseen = 'unseen'
     test_seen = 'seen'
-    
-    cond1 = True
-    cond2 = False
     
     if 'clean' in targets:
         clean()
                     
     if 'data' in targets:
-        data(transform_config, test_unseen, test_seen)
+        data(**transform_config, test_unseen, test_seen)
 
     if 'eda' in targets:  
-        eda(eda_config, test_seen)
+        eda(**eda_config, test_seen)
 
     if 'train' in targets:
-        train()
+        train(**transform_config, **eda_config, test_seen)
 
     if "inference" in targets: 
-        inference()
+        inference(**transform_config, **eda_config, test_unseen)
     
     if "classify" in targets:
-        classify()
+        classify_(**mdl_config)
         
     if "test" in targets: 
         # runs all targets on sample data
-        data(transform_config, test_unseen, test_seen, is_test=True)
-       
-        train(transform_config, eda_config, test_unseen)
-        inference(transform_config, eda_config, test_unseen)
-        classify()
-        
-              
+        data(**transform_config, test_unseen, test_seen, is_test=True) # runs on test dataset
+        eda(**eda_config, test_seen)
+        train(**transform_config, **eda_config, test_unseen)
+        inference(**transform_config, **eda_config, test_unseen)
+        classify_(**mdl_config)
         
     if 'all' in targets: 
         # runs all targets on all data
-        data(transform_config, test_unseen, test_seen) 
-       
-        eda(eda_config, test_seen)
-        
-        train(transform_config, eda_config, test_unseen)
-        inference(transform_config, eda_config, test_unseen)
-        classify()
+        data(**transform_config, test_unseen, test_seen)
+        eda(**eda_config, test_seen)
+        train(**transform_config, **eda_config, test_unseen)
+        inference(**transform_config, **eda_config, test_unseen)
+        classify_(**mdl_config)
         
 
 if __name__ == '__main__':

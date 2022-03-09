@@ -1,5 +1,5 @@
 # Anomaly Detectives
-An in depth approach to detecting significant real-time shifts in network performance indicating network degradation. Building on the data generation process behind [DANE](https://github.com/dane-tool/dane) and Viasat's [network stats](https://github.com/Viasat/network-stats), we build a classification system that determines if there are substantial changes to packet loss rate and degree of latency. Please visit [our webpage](https://lauradiao.github.io/Anomaly-Detectives/) for a more comprehensive view of this project.
+An in depth approach to detecting significant real-time shifts in network performance indicating network degradation. Building on the data generation process behind [DANE](https://github.com/dane-tool/dane) and Viasat's [network stats](https://github.com/Viasat/network-stats), we build a classification system that determines if there are substantial changes to packet loss rate and degree of latency. Please visit [our webpage](https://lauradiao.github.io/Anomaly_Detectives) for a more comprehensive view of this project.
 
 <br>
 
@@ -17,7 +17,7 @@ An in depth approach to detecting significant real-time shifts in network perfor
 
 2. Clone this branch of the repository
    ```
-   git clone https://github.com/LauraDiao/Q2
+   git clone https://github.com/LauraDiao/Anomaly_Detectives
    ```
 
 3. Place all raw DANE csv files within the directory ```data/raw``` of this repository. If the directory has not been created, run the command ```run.py``` once to generate all relevant directories.
@@ -45,15 +45,24 @@ e.g. ```20220117T015822_200-100-true-200-10000-iperf.csv```
 
 this format is crucial for the model to train on the proper labels.
 
-### columns.json
-- object_list": []
-- used inside of getAllCombinations(object_list) of train.py
-- object list is lst inside of train.py, the list of all potential features to make combinations from (of varying length)
-
+## Configuration Files
 ### eda.json
-- "lst": [1, 2], # list of runs to compare side by side made by plottogether() inside of eda.py
-- "filen1": "combined_subset_latency.csv", - subset of the processed data to make eda
-- "filen2": "combined_t_latency.csv", - features generated from processed data
-- "filen3": "combined_all_latency.csv" - all processed - 
 
+- `lst`: [1, 2], # list of runs to compare side by side made by plottogether() inside of eda.py
+- `filen1`: "combined_subset_latency.csv", - subset of the processed data to make eda
+- `filen2`: "combined_t_latency.csv", - features generated from processed data
+- `filen3`: "combined_all_latency.csv" - all processed - 
+
+### model.json
+
+- `n_jobs`: -1 - number of cores the model training is done on
+- `train_window`: 20 - number of seconds that the model will aggregate on for training window size
+- `pca_components`: 4 - number of components for PCA, we determined 4 was optimal for our model
+- `test_size`: 0.005 - model validation set size (train _test_ split)
+- `threshold`: -0.15 - threshold for loss anomaly detection
+- `window`: 20 - rolling window size for test set. should be set to the same as training window.
+- `emplosswindow`: 25 - rolling window aggregation of empirical loss, set at 25 seconds
+- `pct_change_window`: 2 - how many seconds the anomaly detection system looks back for determining change.
+- `verbose`: "True" - whether terminal output should be verbose or not. For debugging purposes.
+ 
 
