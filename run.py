@@ -112,7 +112,6 @@ def classify_(
         "data/temp/tempdata_c",
         lossmodel,
         latmodel,
-        classify,
         loss_thresh,
         lat_thresh,
         window=train_window,
