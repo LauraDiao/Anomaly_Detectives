@@ -328,7 +328,7 @@ def gen_model(
         ]
 
     ## takes transformed datababy from outputs (should be in gdrive)
-    ct = pd.read_csv(f"outputs/combined_transform_{train_window}.csv")
+    ct = pd.read_csv(f"outputs/combined_transform.csv")
 
     X_train, X_test, y_train, y_test = train_test_split(
         ct[[x for x in indexcol if x in ct.columns]],
