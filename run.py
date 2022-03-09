@@ -96,6 +96,7 @@ def classify_(
     loss_thresh,
     lat_thresh,
     emplosswindow,
+    pct_change_window,
     verbose,
 ):
     """generates anomaly classification results"""
@@ -116,6 +117,7 @@ def classify_(
         lat_thresh,
         window=train_window,
         emplosswindow=emplosswindow,
+        pct_change_window=pct_change_window,
         transformed_dir=True,
         verbose=verbose,
     )
