@@ -20,13 +20,13 @@ from make_dir import init_
 def data(transform_config, test_unseen, test_seen, is_test=False):
     # generating feat from unseen and seen data
     if is_test:
-        readfilerun('data/test_data', 'data/temp/tempdata_r')
+        readfilerun('test_data', 'data/temp/tempdata_r')
     else:
         readfilerun('data/raw/train_r', 'data/temp/tempdata_r')
     gen(test_seen, 'tempdata_r', **transform_config, window=25)
     
     if is_test:
-        readfilerun('data/test_data', 'data/temp/tempdata_c')
+        readfilerun('test_data', 'data/temp/tempdata_c')
     else:
         readfilerun('data/raw/train_c', 'data/temp/tempdata_c')
     gen(test_unseen, 'tempdata_c', **transform_config, window=25)
