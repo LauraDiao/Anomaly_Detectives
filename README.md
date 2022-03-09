@@ -60,7 +60,6 @@ this format is crucial for the model to train on the proper labels.
 - `pca_components`: 4 - number of components for PCA, we determined 4 was optimal for our model
 - `test_size`: 0.005 - model validation set size (train _test_ split)
 - `threshold`: -0.15 - threshold for loss anomaly detection
-- `window`: 20 - rolling window size for test set. should be set to the same as training window.
 - `emplosswindow`: 25 - rolling window aggregation of empirical loss, set at 25 seconds
 - `pct_change_window`: 2 - how many seconds the anomaly detection system looks back for determining change.
 - `verbose`: "True" - whether terminal output should be verbose or not. For debugging purposes.
