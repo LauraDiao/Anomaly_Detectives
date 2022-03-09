@@ -95,7 +95,7 @@ def classify_(
     classify,
     loss_thresh,
     lat_thresh,
-    window,
+    emplosswindow,
     verbose,
 ):
     """generates anomaly classification results"""
@@ -114,8 +114,9 @@ def classify_(
         classify,
         loss_thresh,
         lat_thresh,
-        transformed_dir=True,
         window=train_window,
+        emplosswindow=emplosswindow,
+        transformed_dir=True,
         verbose=verbose,
     )
     # saves classification metrics on test set
