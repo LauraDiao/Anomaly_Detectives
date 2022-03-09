@@ -88,13 +88,13 @@ def inference(transform_config, eda_config, test_unseen, is_test=False):
     main_eda(test_unseen, [200, 300], is_test=is_test, **eda_config)
     print("EDA saved to outputs/eda/ folder")
 
-def classify_(n_jobs, train_window, pca_components, test_size, classify, verbose):
+def classify_(n_jobs, train_window, pca_components, test_size, classify, loss_thresh, lat_thresh, verbose):
     '''generates anomaly classification results'''
     
     model_eda()
     lossmodel = gen_model("loss", n_jobs, train_window, pca_components, test_size, verbose)
     latmodel = gen_model("latency", n_jobs, train_window, pca_components, test_size, verbose)
-    lossp, latp = performance_metrics('data/temp/tempdata_c',lossmodel, latmodel, classify, transformed_dir=True, verbose=verbose)
+    lossp, latp = performance_metrics('data/temp/tempdata_c',lossmodel, latmodel, classify, loss_thresh, lat_thresh, transformed_dir=True, verbose=verbose)
     # saves classification metrics on test set
     lossp.to_csv('data/out/loss_model_test_metrics.csv')
     latp.to_csv('data/out/latency_model_test_metrics.csv') 
