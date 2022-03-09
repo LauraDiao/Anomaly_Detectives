@@ -92,7 +92,6 @@ def classify_(
     train_window,
     pca_components,
     test_size,
-    classify,
     loss_thresh,
     lat_thresh,
     emplosswindow,
