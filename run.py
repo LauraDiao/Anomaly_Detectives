@@ -111,34 +111,34 @@ def main(targets):
         clean()
                     
     if 'data' in targets:
-        data(**transform_config, test_unseen, test_seen)
+        data(transform_config, test_unseen, test_seen)
 
     if 'eda' in targets:  
-        eda(**eda_config, test_seen)
+        eda(eda_config, test_seen)
 
     if 'train' in targets:
-        train(**transform_config, **eda_config, test_seen)
+        train(transform_config, eda_config, test_seen)
 
     if "inference" in targets: 
-        inference(**transform_config, **eda_config, test_unseen)
+        inference(transform_config, eda_config, test_unseen)
     
     if "classify" in targets:
         classify_(**mdl_config)
         
     if "test" in targets: 
         # runs all targets on sample data
-        data(**transform_config, test_unseen, test_seen, is_test=True) # runs on test dataset
-        eda(**eda_config, test_seen)
-        train(**transform_config, **eda_config, test_unseen)
-        inference(**transform_config, **eda_config, test_unseen)
+        data(transform_config, test_unseen, test_seen, is_test=True) # runs on test dataset
+        eda(eda_config, test_seen)
+        train(transform_config, eda_config, test_seen)
+        inference(transform_config, eda_config, test_unseen)
         classify_(**mdl_config)
         
     if 'all' in targets: 
         # runs all targets on all data
-        data(**transform_config, test_unseen, test_seen)
-        eda(**eda_config, test_seen)
-        train(**transform_config, **eda_config, test_unseen)
-        inference(**transform_config, **eda_config, test_unseen)
+        data(transform_config, test_unseen, test_seen)
+        eda(eda_config, test_seen)
+        train(transform_config, eda_config, test_seen)
+        inference(transform_config, eda_config, test_unseen)
         classify_(**mdl_config)
         
 
