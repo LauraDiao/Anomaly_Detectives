@@ -56,7 +56,7 @@ def clean():
                 os.remove(fname)
     print('tempfiles cleaned')
 
-def train(transform_config, eda_config, test_seen):
+def train(transform_config, eda_config, test_seen, is_test=False):
     # trains and tests in this target
     readfilerun('data/raw/train_r', 'data/temp/tempdata_r')
     gen(test_seen, 'tempdata_r', **transform_config)
@@ -69,11 +69,11 @@ def train(transform_config, eda_config, test_seen):
     best_performance(test_seen)
     
     print('plotting seen data')
-    main_eda(test_seen, [200, 300], **eda_config)
+    main_eda(test_seen, [200, 300], is_test=is_test, **eda_config)
     print("EDA saved to outputs/eda/ folder")
     
-def inference(transform_config, eda_config, test_unseen):
-    # tests model on unseen data
+def inference(transform_config, eda_config, test_unseen, is_test=False):
+    # tests model on unseen data. breaks if you put shifting dane data inside train_c
     readfilerun('data/raw/train_c', 'data/temp/tempdata_c')
     gen(test_unseen, 'tempdata_c', **transform_config)
     
@@ -85,7 +85,7 @@ def inference(transform_config, eda_config, test_unseen):
     best_performance(test_unseen)
     
     print('plotting unseen data')
-    main_eda(test_unseen, [200, 300], **eda_config)
+    main_eda(test_unseen, [200, 300], is_test=is_test, **eda_config)
     print("EDA saved to outputs/eda/ folder")
 
 def classify_(n_jobs, train_window, pca_components, test_size, classify, verbose):
@@ -123,8 +123,8 @@ def main(targets):
     if 'train' in targets:
         train(transform_config, eda_config, test_seen)
 
-    if "inference" in targets: 
-        inference(transform_config, eda_config, test_unseen)
+    # if "inference" in targets: 
+    #     inference(transform_config, eda_config, test_unseen)
     
     if "classify" in targets:
         classify_(**mdl_config)
@@ -133,8 +133,8 @@ def main(targets):
         # runs all targets on sample data
         data(transform_config, test_unseen, test_seen, is_test=True) # runs on test dataset
         eda(eda_config, test_seen, is_test=True) # ignores some viz that doesnt work with test dataset
-        train(transform_config, eda_config, test_seen)
-        inference(transform_config, eda_config, test_unseen)
+        train(transform_config, eda_config, test_seen, is_test=True)
+        # inference(transform_config, eda_config, test_unseen)
         classify_(**mdl_config)
         
     if 'all' in targets: 
@@ -142,7 +142,7 @@ def main(targets):
         data(transform_config, test_unseen, test_seen)
         eda(eda_config, test_seen)
         train(transform_config, eda_config, test_seen)
-        inference(transform_config, eda_config, test_unseen)
+        # inference(transform_config, eda_config, test_unseen)
         classify_(**mdl_config)
         
 
