@@ -118,11 +118,11 @@ def gen(cond , tempdir, subset, window=10):
     path = os.path.join(os.getcwd() , "outputs", "gen_temp")
     path2 = os.path.join(os.getcwd() , "outputs")
     
-    list_to_csv(data, os.path.join(path2, unseen + f"combined_all_{window}.csv"))
+    list_to_csv(data, os.path.join(path2, unseen + f"combined_all.csv"))
     print('combined_finished', sep=' ')
-    list_to_csv(datasubset, os.path.join(path2, unseen + f"combined_subset_6068_{window}.csv"))
+    list_to_csv(datasubset, os.path.join(path2, unseen + f"combined_subset_6068.csv"))
     print('combined_all_finished', sep=' ')
-    list_to_csv(transformed, os.path.join(path2, unseen +  f"combined_transform_{window}.csv"))
+    list_to_csv(transformed, os.path.join(path2, unseen +  f"combined_transform.csv"))
     print('transformed_finished', sep=' ')
     
     return None
