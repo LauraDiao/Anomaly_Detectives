@@ -31,7 +31,7 @@ def init_():
     img_path = "outputs/eda"
     model_img = "outputs/model"
 
-    if not os.path.isdir("model_img"):
+    if not os.path.isdir(model_img):
         os.mkdir(model_img)
 
     out_path = "data/out"
